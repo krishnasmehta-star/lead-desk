@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Lead Desk · Zubilant</title>
+<meta name="theme-color" content="#00272b">
+<style>
+:root{
+  --bg:#f7f7f5; --paper:#ffffff; --soft:#f1f1ef; --ink:#1d1c1a; --ink2:#6b6a66; --line:#e4e4e1;
+  --teal:#00272b; --tealsoft:#e3eeef;
+  --blue:#2f6fb0; --bluesoft:#e7f3f8; --green:#2f6b4a; --greensoft:#e8f1ea;
+  --red:#c0392f; --redsoft:#fcebe9; --amber:#8a5d0a; --ambersoft:#fbf2da;
+  --violet:#6f4d93; --violetsoft:#f2eef7; --pink:#9c3f70; --pinksoft:#f9edf2;
+  --grey:#6b6a66; --greysoft:#eeeeec;
+  --font:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --r:10px; --shadow:0 1px 2px rgba(20,20,18,.06),0 1px 1px rgba(20,20,18,.04);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+  --bg:#171716; --paper:#201f1e; --soft:#262524; --ink:#ececea; --ink2:#a3a29e; --line:#343331;
+  --teal:#9fd4d8; --tealsoft:#1b3134;
+  --blue:#6fb3e0; --bluesoft:#1d3340; --green:#6cc19a; --greensoft:#1e362a;
+  --red:#ff8d84; --redsoft:#3d2523; --amber:#f0c75e; --ambersoft:#383120;
+  --violet:#b894e6; --violetsoft:#2c2537; --pink:#ee8cc0; --pinksoft:#38222e;
+  --grey:#a3a29e; --greysoft:#2b2a29;
+  --shadow:0 1px 2px rgba(0,0,0,.4);}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--font);
+  -webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+h1,h2,h3{margin:0;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+h1{font-size:30px;font-weight:700}
+h2{font-size:21px;font-weight:650}
+h3{font-size:16px;font-weight:650}
+p{margin:0;max-width:68ch}
+.muted{color:var(--ink2)}
+.small{font-size:13.5px}
+.label{font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+:focus-visible{outline:2.5px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+/* ── top bar ─────────────────────────────────────────────── */
+.top{background:var(--teal);color:#fff;padding:18px 0 0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .top{background:#10292c}}
+.top .wrap{display:grid;gap:3px}
+.top .label{color:#9fd4d8}
+.top h1{color:#fff;font-size:26px}
+.top p{color:#cfe4e6;font-size:14.5px}
+.tabs{display:flex;gap:4px;margin-top:14px}
+.tabs button{border:0;background:none;color:#a9c9cc;font:650 15px var(--font);
+  padding:10px 14px;cursor:pointer;border-radius:8px 8px 0 0;min-height:44px}
+.tabs button[aria-selected="true"]{background:var(--bg);color:var(--ink)}
+
+/* ── banners ─────────────────────────────────────────────── */
+.banner{border-radius:var(--r);padding:12px 14px;font-size:14.5px;background:var(--ambersoft);
+  color:var(--ink);display:grid;gap:8px}
+.banner.bad{background:var(--redsoft)}
+.banner.wait{background:var(--soft);color:var(--ink2)}
+.banner.good{background:var(--greensoft)}
+.banner b{font-weight:700}
+
+/* ── KPIs ────────────────────────────────────────────────── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);
+  padding:11px 13px;box-shadow:var(--shadow)}
+.kpi .v{display:block;font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi .l{display:block;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.kpi.alert{background:var(--redsoft);border-color:transparent}
+.kpi.alert .v{color:var(--red)}
+
+/* ── controls ────────────────────────────────────────────── */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input,select,textarea{font:16px var(--font);padding:10px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--paper);color:var(--ink);max-width:100%;min-height:44px}
+textarea{min-height:60px;line-height:1.5}
+.btn{font:650 15.5px var(--font);border:0;border-radius:9px;padding:0 18px;min-height:46px;
+  cursor:pointer;background:var(--teal);color:#fff;display:inline-flex;align-items:center;
+  justify-content:center;gap:7px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{background:#0d6f78}}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:var(--soft);color:var(--ink)}
+.btn.warn{background:var(--red);color:#fff}
+.btn.big{width:100%}
+.seg{display:inline-flex;background:var(--soft);border-radius:9px;padding:3px;gap:2px}
+.seg button{border:0;background:none;font:650 14.5px var(--font);color:var(--ink2);
+  padding:0 15px;min-height:38px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+.chip{font:14.5px var(--font);border:1px solid var(--line);border-radius:999px;padding:0 14px;
+  min-height:40px;background:var(--paper);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* ── tags ────────────────────────────────────────────────── */
+.tag{display:inline-block;font-size:12.5px;font-weight:600;line-height:1.6;padding:1px 9px;
+  border-radius:5px;white-space:nowrap;background:var(--greysoft);color:var(--grey)}
+.tag.blue{background:var(--bluesoft);color:var(--blue)} .tag.green{background:var(--greensoft);color:var(--green)}
+.tag.red{background:var(--redsoft);color:var(--red)} .tag.amber{background:var(--ambersoft);color:var(--amber)}
+.tag.violet{background:var(--violetsoft);color:var(--violet)} .tag.pink{background:var(--pinksoft);color:var(--pink)}
+.tag.grey{background:var(--greysoft);color:var(--grey)}
+
+/* ── the list, which is what a phone gets ────────────────── */
+.group{display:grid;gap:8px;margin-top:22px}
+.ghead{display:flex;align-items:baseline;gap:9px}
+.ghead h2{font-size:17px}
+.ghead .n{font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.ghead .hr{flex:1;height:1px;background:var(--line)}
+.lead{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--line);
+  border-radius:var(--r);padding:13px 14px;display:grid;gap:7px;cursor:pointer;text-align:left;
+  font:inherit;color:inherit;width:100%;box-shadow:var(--shadow)}
+.lead:hover{border-color:var(--ink2)}
+.lead.over{border-left-color:var(--red)}
+.lead.soon{border-left-color:var(--amber)}
+.lead.done{border-left-color:var(--green)}
+.lead.shut{opacity:.72}
+.lead.unsaved{border-left-color:var(--amber);background:var(--ambersoft)}
+.lrow1{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.lead .n{font-size:17px;font-weight:650}
+.lead .ph{font-size:14px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lead .trip{font-size:14.5px;color:var(--ink2)}
+.lead .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.lead .due{font-size:14px;font-weight:600;color:var(--ink2)}
+.lead.over .due{color:var(--red)}
+.lead.soon .due{color:var(--amber)}
+.lead .flag{font-size:13px;font-weight:700;color:var(--amber)}
+.lcall{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:650;
+  color:var(--blue);text-decoration:none;padding:4px 0}
+.empty{color:var(--ink2);font-size:14px;padding:10px 2px}
+
+/* ── the board, for a wide screen ────────────────────────── */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(232px,1fr);gap:9px;
+  overflow-x:auto;padding-bottom:10px;margin-top:18px}
+.col{background:var(--soft);border-radius:var(--r);padding:9px;display:grid;gap:8px;
+  align-content:start;min-height:120px}
+.col h3{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;gap:6px}
+.col .lead{box-shadow:none}
+
+/* ── dialog ──────────────────────────────────────────────── */
+dialog{border:0;border-radius:14px;background:var(--paper);color:var(--ink);padding:0;
+  width:min(640px,calc(100vw - 20px));max-height:calc(100dvh - 24px);
+  box-shadow:0 18px 50px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(10,10,10,.5)}
+form.f{display:grid;gap:15px;padding:20px}
+.f h2{font-size:20px}
+.f .field{display:grid;gap:5px}
+.f .field > span{font-size:14px;font-weight:650}
+.f .hint{font-size:13px;color:var(--ink2);font-weight:400}
+.f .req{color:var(--red)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.f details{border-top:1px solid var(--line);padding-top:12px}
+.f summary{cursor:pointer;font-weight:650;font-size:14.5px;min-height:34px}
+.f .actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;align-items:center;
+  position:sticky;bottom:0;background:var(--paper);padding-top:10px;margin:0 -20px -20px;
+  padding:12px 20px 20px;border-top:1px solid var(--line)}
+.f .actions .note{margin-right:auto;font-size:13px;color:var(--ink2)}
+.hist{font-size:13.5px;color:var(--ink2);max-height:130px;overflow:auto;display:grid;gap:3px;
+  background:var(--soft);border-radius:8px;padding:9px 11px}
+.err{background:var(--redsoft);color:var(--red);border-radius:8px;padding:9px 11px;
+  font-size:14.5px;font-weight:650}
+.toast{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);
+  padding:12px 18px;border-radius:10px;font-size:14.5px;z-index:50;max-width:calc(100vw - 32px);
+  box-shadow:0 8px 24px rgba(0,0,0,.25)}
+
+/* ── playbook ────────────────────────────────────────────── */
+section.block{display:grid;gap:12px;padding-block:24px}
+.callout{border-radius:var(--r);padding:14px 16px;display:grid;gap:6px}
+.callout.yellow{background:var(--ambersoft)} .callout.red{background:var(--redsoft)}
+.callout.blue{background:var(--bluesoft)} .callout.grey{background:var(--soft)}
+.tw{overflow-x:auto}
+table.t{border-collapse:collapse;width:100%;font-size:14.5px;min-width:520px}
+.t th,.t td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+.t th{font-weight:600;color:var(--ink2);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+.rule{border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:4px;
+  align-content:start;background:var(--paper)}
+.rule .clock{font-size:23px;font-weight:700}
+.rule.hard{background:var(--redsoft);border-color:transparent}
+.rule.hard .clock{color:var(--red)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:10px}
+.step{background:var(--soft);border-radius:var(--r);padding:13px 14px;display:grid;gap:4px}
+.step .n{font-size:11.5px;font-weight:700;color:var(--ink2);letter-spacing:.06em}
+
+@media (max-width:640px){
+  h1{font-size:24px}
+  .top h1{font-size:23px}
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .kpi.extra{display:none}
+  .kpi .v{font-size:23px}
+  .seg{width:100%}
+  .seg button{flex:1}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span class="label">zubilant.co.in · operations</span>
+    <h1>Lead Desk</h1>
+    <p>Every enquiry logged, called back fast, never lost.</p>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="t-track" aria-selected="true">Leads</button>
+      <button role="tab" id="t-play" aria-selected="false">How it works</button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════ TRACKER ══════════════ -->
+<main id="p-track" class="wrap">
+  <div style="display:grid;gap:14px;padding-top:18px">
+
+    <div id="mode" class="banner wait">Loading the tracker…</div>
+
+    <div id="retryBar" class="banner bad" hidden>
+      <span><b id="retryCount"></b> <span id="retryWord"></span> not saved yet. They are kept on this
+        phone and shown in amber below, so nothing is lost.</span>
+      <div class="bar"><button class="btn warn" id="retryBtn">Try saving again</button></div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <button class="btn big" id="addBtn" disabled>+ Add a lead</button>
+
+    <div class="bar">
+      <div class="seg" role="group" aria-label="View">
+        <button id="vList" aria-pressed="true">What to do</button>
+        <button id="vBoard" aria-pressed="false">Whole board</button>
+      </div>
+    </div>
+
+    <div class="bar">
+      <input id="q" type="search" placeholder="Search name, phone or trip" aria-label="Search leads" style="flex:1;min-width:170px">
+      <select id="fSource" aria-label="Filter by where it came from"></select>
+    </div>
+
+    <div id="listView"></div>
+    <div class="board" id="board" hidden></div>
+  </div>
+</main>
+
+<!-- ══════════════ PLAYBOOK ══════════════ -->
+<main id="p-play" class="wrap" hidden>
+  <section class="block">
+    <div class="callout yellow">
+      <b>The whole job in one line</b>
+      <p>When a lead comes in: <b>put it in the tracker, call within 2 hours, and always write down
+      when you will follow up next.</b> That is it. The ops manager owns every lead until it is
+      Booked or Not going ahead.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label">1 · Where leads come from</span>
+    <h2>Three places to check, every day</h2>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Where</th><th>What it looks like</th><th>What to copy in</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag blue">Website form</span></td>
+            <td>An email in <b>experience@zubilant.co.in</b>, subject
+                <i>"New enquiry via zubilant.co.in: Ladakh by Road"</i>. Ask Zubi arrives this way too.</td>
+            <td>Name, phone, and the trip from the subject line</td></tr>
+        <tr><td><span class="tag green">WhatsApp</span></td>
+            <td>A message on the Zubilant WhatsApp number</td>
+            <td>Name, number, what they asked about</td></tr>
+        <tr><td><span class="tag amber">Phone call</span></td>
+            <td>Someone rings the office</td>
+            <td>Name, number, what they asked about</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <span class="label">2 · The steps</span>
+    <h2>Every lead moves left to right</h2>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Step</th><th>What it means</th><th>What you do next</th><th>Deadline</th></tr></thead>
+      <tbody id="stageTable"></tbody>
+    </table></div>
+  </section>
+
+  <section class="block">
+    <span class="label">3 · How fast, strictly</span>
+    <h2>Reply times we do not miss</h2>
+    <p class="muted">People send enquiries to two or three travel companies on the same evening.
+      Whoever calls back first usually gets the booking.</p>
+    <div class="rules">
+      <div class="rule hard"><span class="clock">2 hours</span><h3>First call</h3>
+        <p>Leads between 9am and 7pm, Mon to Sat. No answer? Send a WhatsApp right away.</p></div>
+      <div class="rule hard"><span class="clock">By 10am</span><h3>Late leads</h3>
+        <p>Anything after 7pm or on Sunday gets called by 10am the next working day.</p></div>
+      <div class="rule hard"><span class="clock">1 day</span><h3>Our public promise</h3>
+        <p>The website promises a person will reply. Going past one working day breaks that.</p></div>
+      <div class="rule"><span class="clock">24 hours</span><h3>Quote out</h3>
+        <p>Once you have their trip details, the plan and price go out within 24 hours.</p></div>
+      <div class="rule"><span class="clock">Day 2 · 5 · 10</span><h3>Follow-ups</h3>
+        <p>After a quote, follow up on these days. Note every call in the tracker.</p></div>
+      <div class="rule"><span class="clock">4 tries</span><h3>When to stop</h3>
+        <p>Four real attempts over 7 days, no reply: close it as "No response".</p></div>
+    </div>
+    <div class="callout red">
+      <b>Four rules, no exceptions</b>
+      <p>1. No lead ends the day outside the tracker. 2. Every open lead has a follow-up date.
+      3. Nothing is closed without a reason. 4. Nothing is deleted. Mistakes are closed as
+      "Duplicate or test".</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <span class="label">4 · The first call</span>
+    <h2>5 minutes, 4 questions</h2>
+    <div class="steps">
+      <div class="step"><span class="n">ASK 1</span><b>When do you want to go?</b></div>
+      <div class="step"><span class="n">ASK 2</span><b>How many people? Any kids or seniors?</b></div>
+      <div class="step"><span class="n">ASK 3</span><b>Roughly what budget?</b></div>
+      <div class="step"><span class="n">ASK 4</span><b>Is anyone else deciding with you?</b></div>
+    </div>
+    <div class="callout grey"><p><b>End every call with a time:</b> "I will send you a plan and
+      price by 4pm tomorrow." Then do it.</p></div>
+  </section>
+
+  <section class="block">
+    <span class="label">5 · Every Monday</span>
+    <h2>Read the numbers at the top of the Leads tab</h2>
+    <p>New leads last week · how many were called within 2 hours (<b>aim for 9 out of 10</b>) ·
+      how many are late now · how many booked. Other targets get set after a month of real numbers.</p>
+  </section>
+</main>
+
+<!-- ══════════════ FORM ══════════════ -->
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form class="f" id="form" novalidate>
+    <h2 id="dlgTitle">Add a lead</h2>
+
+    <div class="callout blue" id="pasteWrap">
+      <b>Got the enquiry email? Paste it here.</b>
+      <span class="hint">Open the email, select all, copy, paste below. Name, phone, email and trip
+        fill themselves in. Check them, then Save.</span>
+      <textarea id="i-paste" rows="2" placeholder="Paste the whole email here"></textarea>
+      <span class="hint" id="pasteMsg"></span>
+    </div>
+
+    <div class="grid2">
+      <label class="field"><span>Name <span class="req">*</span></span>
+        <input id="i-name" maxlength="80" autocomplete="off"></label>
+      <label class="field"><span>Phone <span class="req">*</span></span>
+        <input id="i-phone" maxlength="30" inputmode="tel" autocomplete="off"></label>
+    </div>
+
+    <label class="field"><span>Where did it come from? <span class="req">*</span></span>
+      <select id="i-source"></select><span class="hint" id="h-source"></span></label>
+
+    <label class="field"><span>Which trip are they asking about?</span>
+      <input id="i-journey" maxlength="120" placeholder="e.g. Ladakh by Road"></label>
+
+    <label class="field"><span>Step</span>
+      <select id="i-stage"></select><span class="hint" id="h-stage"></span></label>
+
+    <div class="field" id="nextWrap"><span>When will you follow up next?
+      <span class="req" id="nextReq">*</span></span>
+      <div class="bar">
+        <button type="button" class="chip" data-d="0">Today</button>
+        <button type="button" class="chip" data-d="1">Tomorrow</button>
+        <button type="button" class="chip" data-d="2">In 2 days</button>
+        <button type="button" class="chip" data-d="5">In 5 days</button>
+        <input id="i-next" type="date" aria-label="Follow-up date">
+      </div>
+    </div>
+
+    <label class="field" id="lostWrap" hidden><span>Why not? <span class="req">*</span></span>
+      <select id="i-lost"></select></label>
+    <label class="field" id="valueWrap" hidden><span>Booking amount (₹)</span>
+      <input id="i-value" type="number" min="0" step="1" inputmode="numeric"></label>
+
+    <label class="field"><span>Note</span>
+      <textarea id="i-note" rows="2" maxlength="500"
+        placeholder="What happened? e.g. Called, no answer, sent WhatsApp."></textarea></label>
+
+    <details id="more"><summary>More details (optional)</summary>
+      <div class="grid2" style="margin-top:11px">
+        <label class="field"><span>How serious are they?</span>
+          <select id="i-temp"></select><span class="hint" id="h-temp"></span></label>
+        <label class="field"><span>Who is travelling?</span><select id="i-type"></select></label>
+        <label class="field"><span>Email</span><input id="i-email" type="email" maxlength="120"></label>
+        <label class="field"><span>How many people?</span>
+          <input id="i-pax" maxlength="30" placeholder="2 adults, 1 child"></label>
+        <label class="field"><span>Travel dates</span>
+          <input id="i-dates" maxlength="60" placeholder="Mid-Dec, 6 nights"></label>
+        <label class="field"><span>Budget</span>
+          <input id="i-budget" maxlength="60" placeholder="60k per person"></label>
+      </div>
+    </details>
+
+    <div class="field" id="histWrap" hidden><span class="label">History</span>
+      <div class="hist" id="hist"></div></div>
+
+    <div id="err" class="err" role="alert" hidden></div>
+
+    <div class="actions">
+      <span class="note" id="saveNote"></span>
+      <button type="button" class="btn ghost" id="cancel">Cancel</button>
+      <button type="submit" class="btn" id="saveBtn" disabled>Save</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   ZUBILANT LEAD DESK
+   Data lives in a Google Sheet, reached through an Apps Script
+   web app. Anyone with this page's link can read and save. No
+   accounts, no sign-in, no per-seat cost.
+   ═══════════════════════════════════════════════════════════ */
+
+var API = "https://script.google.com/macros/s/AKfycbyYR0A9D6ev8WF-h3RdJC7X94Ovw_5R2AGXQkaa04xIDdBRQg_r3f6mN9vCxGbBgC7tjA/exec";          // set at deploy time
+var POLL_MS = 30000;                      // refresh from the Sheet every 30s
+
+var STAGES=[
+ {k:"new",n:"New, not called",c:"blue",m:"Lead is in. Nobody has spoken to them.",d:"Call them. No answer? WhatsApp.",t:"2 hours",tc:"red"},
+ {k:"called",n:"Called or messaged",c:"grey",m:"We reached them or tried properly.",d:"Get the 4 answers: when, how many, budget, who decides.",t:"Same day",tc:"amber"},
+ {k:"details",n:"Trip details taken",c:"violet",m:"We know when, how many and the budget.",d:"Send the plan and price.",t:"24 hours",tc:"red"},
+ {k:"quote",n:"Quote sent",c:"pink",m:"They have the plan and price in writing.",d:"Follow up on day 2, 5 and 10.",t:"Day 2",tc:"amber"},
+ {k:"talking",n:"Talking it over",c:"amber",m:"Changes, questions, comparing options.",d:"Answer quickly. Check in every 2 days.",t:"Every 2 days",tc:"amber"},
+ {k:"booked",n:"Booked",c:"green",m:"Advance paid.",d:"Hand to operations. Enter the amount.",t:"Enter amount",tc:"green"},
+ {k:"lost",n:"Not going ahead",c:"red",m:"Closed.",d:"Pick the reason.",t:"Reason needed",tc:"grey"}];
+var SM={};STAGES.forEach(function(s){SM[s.k]=s});
+
+var SOURCES=[
+ {k:"form",n:"Website form",h:"An email in experience@zubilant.co.in starting \"New enquiry via zubilant.co.in\". Ask Zubi arrives this way too."},
+ {k:"whatsapp",n:"WhatsApp",h:"A message on the Zubilant WhatsApp number."},
+ {k:"phone",n:"Phone call",h:"Someone called the office."},
+ {k:"referral",n:"Referred by someone",h:"A past guest, friend or partner sent them."},
+ {k:"other",n:"Other",h:"Instagram, walk-in or anything else. Add a note saying where."}];
+var SRC={};SOURCES.forEach(function(s){SRC[s.k]=s});
+
+var TEMPS=[
+ {k:"",n:"Not sure yet",h:"Leave this until you have spoken to them."},
+ {k:"hot",n:"Ready to book",h:"Travelling within about 2 months and the budget fits. Call these first."},
+ {k:"warm",n:"Planning",h:"Serious, but travelling later or still deciding."},
+ {k:"cold",n:"Just asking",h:"Checking prices, no dates yet. Lowest priority."}];
+var TM={};TEMPS.forEach(function(s){TM[s.k]=s});
+
+var TYPES=["","Family","Couple","Solo","Friends group","Company / office trip"];
+var LOST=["","No response","Price too high","Booked with someone else","Dates changed / trip cancelled","We do not do this trip","Just exploring","Duplicate or test"];
+
+var $=function(id){return document.getElementById(id)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var pad=function(n){return String(n).padStart(2,'0')};
+var ymd=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+var today=function(){return ymd(new Date())};
+var plus=function(n){var d=new Date();d.setDate(d.getDate()+n);return ymd(d)};
+function nice(s){ if(!s) return '';
+  var t=today(); if(s===t) return 'today'; if(s===plus(1)) return 'tomorrow';
+  if(s===plus(-1)) return 'yesterday';
+  var p=String(s).split('-');
+  return new Date(+p[0],p[1]-1,+p[2]).toLocaleDateString('en-IN',{day:'numeric',month:'short'}); }
+function telHref(p){ return 'tel:'+String(p||'').replace(/[^\d+]/g,''); }
+
+/* ── tabs ──────────────────────────────────────────────── */
+function show(k){ ['track','play'].forEach(function(n){
+    $('t-'+n).setAttribute('aria-selected', n===k); $('p-'+n).hidden = n!==k; });
+  try{ localStorage.setItem('zl-tab',k) }catch(e){} }
+$('t-play').onclick=function(){show('play')};
+$('t-track').onclick=function(){show('track')};
+try{ var t0=localStorage.getItem('zl-tab'); if(t0==='play') show('play'); }catch(e){}
+
+$('stageTable').innerHTML = STAGES.map(function(s,i){
+  return '<tr><td><span class="tag '+s.c+'">'+(i+1)+'. '+esc(s.n)+'</span></td><td>'+esc(s.m)+
+         '</td><td>'+esc(s.d)+'</td><td><span class="tag '+s.tc+'">'+esc(s.t)+'</span></td></tr>' }).join('');
+
+/* ── form options ──────────────────────────────────────── */
+function opt(el,arr){ el.innerHTML = arr.map(function(o){
+  return typeof o==='string'
+    ? '<option value="'+esc(o)+'">'+(o||'Choose…')+'</option>'
+    : '<option value="'+esc(o.k)+'">'+esc(o.n)+'</option>' }).join('') }
+opt($('i-source'),SOURCES); opt($('i-stage'),STAGES); opt($('i-temp'),TEMPS);
+opt($('i-type'),TYPES); opt($('i-lost'),LOST);
+$('fSource').innerHTML = '<option value="">All sources</option>' +
+  SOURCES.map(function(s){return '<option value="'+s.k+'">'+esc(s.n)+'</option>'}).join('');
+
+function syncForm(){
+  $('h-source').textContent = (SRC[$('i-source').value]||{}).h || '';
+  var st = SM[$('i-stage').value];
+  $('h-stage').textContent = 'Next: ' + st.d;
+  $('h-temp').textContent = (TM[$('i-temp').value]||{}).h || '';
+  var closed = st.k==='booked' || st.k==='lost';
+  $('nextWrap').hidden = closed; $('nextReq').hidden = st.k==='new';
+  $('lostWrap').hidden = st.k!=='lost'; $('valueWrap').hidden = st.k!=='booked';
+  Array.prototype.forEach.call(document.querySelectorAll('#nextWrap .chip'), function(c){
+    c.setAttribute('aria-pressed', $('i-next').value === plus(+c.dataset.d)); });
+}
+['i-source','i-stage','i-temp','i-next'].forEach(function(i){ $(i).addEventListener('input',syncForm) });
+Array.prototype.forEach.call(document.querySelectorAll('#nextWrap .chip'), function(c){
+  c.onclick=function(){ $('i-next').value = plus(+c.dataset.d); syncForm(); } });
+
+/* ── state ─────────────────────────────────────────────── */
+var sheetLeads=[];        // what the Sheet holds
+var pending={};           // saved by someone here, not yet accepted by the Sheet
+var ready=false, loaded=false, editing=null, view='list';
+
+var PKEY='zl-pending2';
+function loadPending(){ try{ var r=JSON.parse(localStorage.getItem(PKEY)||'{}');
+  return (r && typeof r==='object') ? r : {} }catch(e){ return {} } }
+function savePending(){ try{ localStorage.setItem(PKEY,JSON.stringify(pending)) }catch(e){} }
+pending = loadPending();
+
+function allLeads(){
+  var m = {};
+  sheetLeads.forEach(function(l){ if(l && l.id && l.name) m[l.id]=l; });
+  Object.keys(pending).forEach(function(k){
+    var p = pending[k];
+    if(p && p.id && p.name){ var c={}; for(var x in p) c[x]=p[x]; c._unsaved=true; m[p.id]=c; } });
+  return Object.keys(m).map(function(k){ return m[k] });
+}
+
+function status(l){
+  if(l.stage==='booked') return 'done';
+  if(l.stage==='lost') return 'shut';
+  if(l.stage==='new'){ var h=(Date.now()-(l.created||0))/36e5;
+    if(h>=2) return 'over'; if(h>=1) return 'soon'; }
+  if(l.next){ if(l.next < today()) return 'over'; if(l.next === today()) return 'soon'; }
+  return '';
+}
+function dueText(l){
+  if(l.stage==='booked') return l.value ? 'Booked · ₹'+Number(l.value).toLocaleString('en-IN') : 'Booked';
+  if(l.stage==='lost') return l.lost || 'Closed';
+  if(l.stage==='new'){
+    var m = Math.max(0, Math.round((Date.now()-(l.created||0))/6e4));
+    var age = m<60 ? m+' min' : Math.floor(m/60)+'h '+(m%60)+'m';
+    return (status(l)==='over' ? 'LATE · ' : '') + 'waiting '+age+' for a call'; }
+  if(!l.next) return 'No follow-up date set';
+  return (status(l)==='over' ? 'LATE · was due ' : 'Follow up ') + nice(l.next);
+}
+
+function card(l){
+  var st = status(l);
+  var cls = 'lead ' + st + (l._unsaved ? ' unsaved' : '');
+  var temp = TM[l.temp||''];
+  return '<button type="button" class="'+cls+'" data-id="'+esc(l.id)+'">'
+    + '<span class="lrow1"><span class="n">'+esc(l.name)+'</span>'
+    + '<span class="ph">'+esc(l.phone||'')+'</span></span>'
+    + '<span class="trip">'+esc(l.journey||'Trip not noted')+'</span>'
+    + '<span class="meta"><span class="tag">'+esc((SRC[l.source]||{}).n||'Other')+'</span>'
+    + (l.temp ? '<span class="tag">'+esc(temp?temp.n:'')+'</span>' : '')
+    + '<span class="tag '+SM[l.stage].c+'">'+esc(SM[l.stage].n)+'</span></span>'
+    + (l._unsaved ? '<span class="flag">Not saved yet</span>' : '')
+    + '<span class="due">'+esc(dueText(l))+'</span>'
+    + '</button>';
+}
+
+function visible(){
+  var q = $('q').value.trim().toLowerCase(), fs = $('fSource').value;
+  return allLeads().filter(function(l){
+    var hay = [l.name,l.phone,l.journey,l.email].join(' ').toLowerCase();
+    return (!q || hay.indexOf(q)>=0) && (!fs || l.source===fs); });
+}
+
+function group(title, note, items){
+  if(!items.length) return '';
+  return '<div class="group"><div class="ghead"><h2>'+esc(title)+'</h2>'
+    + '<span class="n">'+items.length+'</span><span class="hr"></span></div>'
+    + (note ? '<p class="muted small">'+esc(note)+'</p>' : '')
+    + items.map(card).join('') + '</div>';
+}
+
+function render(){
+  var vis = visible();
+  var byDate = function(a,b){ return (a.next||'9999') < (b.next||'9999') ? -1 : 1 };
+
+  if(view==='list'){
+    $('listView').hidden = false; $('board').hidden = true;
+    var late  = vis.filter(function(l){ return status(l)==='over' }).sort(byDate);
+    var now   = vis.filter(function(l){ return status(l)==='soon' }).sort(byDate);
+    var open  = vis.filter(function(l){ var s=status(l); return s==='' }).sort(byDate);
+    var shut  = vis.filter(function(l){ var s=status(l); return s==='done'||s==='shut' })
+                   .sort(function(a,b){ return (b.updated||0)-(a.updated||0) }).slice(0,12);
+    var html = group('Do these now', 'Past their deadline.', late)
+             + group('Due today', '', now)
+             + group('Waiting', 'Follow-up date is in the future.', open)
+             + group('Closed', 'The twelve most recent.', shut);
+    $('listView').innerHTML = html ||
+      '<p class="empty">Nothing here yet. Press <b>Add a lead</b> when the first enquiry comes in.</p>';
+  } else {
+    $('listView').hidden = true; $('board').hidden = false;
+    $('board').innerHTML = STAGES.map(function(s){
+      var ls = vis.filter(function(l){ return l.stage===s.k })
+                  .sort(function(a,b){
+                    return ((b._unsaved?1:0)-(a._unsaved?1:0))
+                        || ((status(b)==='over')-(status(a)==='over'))
+                        || byDate(a,b); });
+      return '<div class="col"><h3><span class="tag '+s.c+'">'+esc(s.n)+'</span>'
+        + '<span class="muted small">'+ls.length+'</span></h3>'
+        + (ls.map(card).join('') || '<span class="empty">Nothing here</span>') + '</div>'; }).join('');
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll('.lead'), function(b){
+    b.onclick = function(){ openLead(b.dataset.id) } });
+
+  var n = Object.keys(pending).length;
+  $('retryBar').hidden = n===0;
+  if(n){ $('retryCount').textContent = n; $('retryWord').textContent = n===1?'lead is':'leads are'; }
+
+  // numbers
+  var leads = allLeads(), wk = Date.now()-7*864e5;
+  var recent  = leads.filter(function(l){ return (l.created||0)>=wk && l.lost!=='Duplicate or test' });
+  var reached = recent.filter(function(l){ return l.firstContact });
+  var fast    = reached.filter(function(l){ return l.firstContact-l.created <= 2*36e5 }).length;
+  var openAll = leads.filter(function(l){ return l.stage!=='booked' && l.stage!=='lost' });
+  var over    = openAll.filter(function(l){ return status(l)==='over' }).length;
+  var won     = leads.filter(function(l){ return l.stage==='booked' && (l.bookedAt||0)>=wk });
+  var val     = won.reduce(function(a,l){ return a + (Number(l.value)||0) }, 0);
+  $('kpis').innerHTML = [
+    [over, 'Late right now', over>0],
+    [openAll.length, 'Still open'],
+    [recent.length, 'New this week'],
+    [reached.length ? fast+' of '+reached.length : '–', 'Called in 2 hours'],
+    [won.length + (val ? ' · ₹'+val.toLocaleString('en-IN') : ''), 'Booked this week']
+  ].map(function(r,i){
+    // the first two are the ones that drive the day; the rest are for the
+    // Monday review and are held back on a phone so leads stay above the fold
+    return '<div class="kpi '+(r[2]?'alert ':'')+(i>1?'extra':'')+'"><span class="v">'+r[0]+
+           '</span><span class="l">'+esc(r[1])+'</span></div>' }).join('');
+}
+$('q').addEventListener('input',render);
+$('fSource').addEventListener('input',render);
+$('vList').onclick=function(){ view='list'; $('vList').setAttribute('aria-pressed',true);
+  $('vBoard').setAttribute('aria-pressed',false); render(); };
+$('vBoard').onclick=function(){ view='board'; $('vBoard').setAttribute('aria-pressed',true);
+  $('vList').setAttribute('aria-pressed',false); render(); };
+setInterval(render, 60000);
+
+/* ── the form ──────────────────────────────────────────── */
+var F=['name','phone','email','journey','source','stage','temp','type','pax','dates','budget','next','value','lost'];
+function openLead(id){
+  var found = id ? allLeads().filter(function(l){return l.id===id})[0] : null;
+  editing = found || null;
+  var l = editing || {source:'form',stage:'new',temp:'',type:''};
+  $('dlgTitle').textContent = editing ? editing.name : 'Add a lead';
+  F.forEach(function(k){ $('i-'+k).value = (l[k]==null?'':l[k]) });
+  $('i-note').value=''; $('i-paste').value=''; $('pasteMsg').textContent='';
+  $('pasteWrap').hidden = !!editing; $('err').hidden = true;
+  $('more').open = !!(editing && (l.email||l.pax||l.dates||l.budget||l.temp||l.type));
+  var log = l.log || [];
+  $('histWrap').hidden = !log.length;
+  $('hist').innerHTML = log.slice().reverse().map(function(e){
+    return '<span>'+esc(new Date(e.t).toLocaleString('en-IN',
+      {day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}))+' · '+esc(e.m)+'</span>' }).join('');
+  applyGate(); syncForm(); $('dlg').showModal();
+  setTimeout(function(){ $('i-name').focus() }, 30);
+}
+$('addBtn').onclick=function(){ openLead(null) };
+$('cancel').onclick=function(){ $('dlg').close() };
+$('dlg').addEventListener('click', function(e){ if(e.target===$('dlg')) $('dlg').close() });
+
+function parseEnquiry(txt){
+  var out={}, t=txt.replace(/\r/g,'');
+  var subj=t.match(/New enquiry via zubilant\.co\.in\s*[:\-–]\s*([^\n]+)/i);
+  if(subj) out.journey=subj[1].trim();
+  var lines=t.split('\n').map(function(x){return x.trim()}).filter(Boolean);
+  function val(re){ for(var i=0;i<lines.length;i++){ var m=lines[i].match(re);
+    if(m){ var rest=lines[i].slice(m[0].length).replace(/^[\s:\t|-]+/,'').trim();
+      if(rest) return rest; if(lines[i+1]) return lines[i+1]; } } return '' }
+  var name=val(/^(full\s*)?name\b/i); if(name && name.indexOf('@')<0) out.name=name.slice(0,80);
+  var em=t.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig);
+  if(em){ var e=em.filter(function(x){ return !/zubilant\.co\.in$|formsubmit/i.test(x) })[0];
+    if(e) out.email=e; }
+  var phLine=val(/^(phone|mobile|whatsapp|contact(\s*number)?)\b/i);
+  var ph=(phLine||t).match(/(\+?\d[\d\s\-()]{7,}\d)/); if(ph) out.phone=ph[1].replace(/\s{2,}/g,' ').trim();
+  var who=val(/^(who'?s travelling|travellers|who)\b/i); if(who) out.pax=who.slice(0,30);
+  if(!out.journey){ var j=val(/^(journey|trip|destination|interested in)\b/i); if(j) out.journey=j.slice(0,120); }
+  var notes=val(/^(notes|message|details)\b/i); if(notes) out.note=notes.slice(0,500);
+  return out;
+}
+$('i-paste').addEventListener('input', function(){
+  var r=parseEnquiry($('i-paste').value), got=[];
+  if(r.name){ $('i-name').value=r.name; got.push('name') }
+  if(r.phone){ $('i-phone').value=r.phone; got.push('phone') }
+  if(r.email){ $('i-email').value=r.email; got.push('email') }
+  if(r.journey){ $('i-journey').value=r.journey; got.push('trip') }
+  if(r.pax){ $('i-pax').value=r.pax; got.push('travellers') }
+  if(r.note && !$('i-note').value) $('i-note').value='From the website: '+r.note;
+  $('i-source').value='form'; syncForm();
+  $('pasteMsg').textContent = $('i-paste').value.trim()
+    ? (got.length ? 'Filled in: '+got.join(', ')+'. Please check before saving.'
+                  : 'Could not find the details in that text. Please type them in.')
+    : '';
+});
+
+function toast(m,ms){ var t=$('toast'); t.textContent=m; t.hidden=false;
+  clearTimeout(toast.h); toast.h=setTimeout(function(){ t.hidden=true }, ms||3000) }
+function fail(m,el){ $('err').textContent=m; $('err').hidden=false;
+  $('err').scrollIntoView({block:'nearest'}); if(el) el.focus() }
+function applyGate(){
+  $('addBtn').disabled = !ready; $('saveBtn').disabled = !ready;
+  $('saveNote').textContent = ready ? '' : 'Still loading…';
+}
+function mode(cls, html){ var b=$('mode'); b.hidden=false; b.className='banner '+cls;
+  b.innerHTML='<span>'+html+'</span>' }
+
+$('form').addEventListener('submit', function(e){
+  e.preventDefault();
+  if($('saveBtn').disabled) return;
+  var v={}; F.forEach(function(k){ v[k]=$('i-'+k).value.trim() });
+  if(v.name.length<2) return fail('Please add their name.', $('i-name'));
+  var digits=v.phone.replace(/\D/g,'');
+  if(digits.length<8 || digits.length>15)
+    return fail('Please add a phone number we can call (8 to 15 digits).', $('i-phone'));
+  if(v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)){
+    $('more').open=true; return fail('That email does not look right. Fix it or leave it empty.', $('i-email')); }
+  var closed = v.stage==='booked' || v.stage==='lost';
+  if(v.stage==='lost' && !v.lost) return fail('Pick why it is not going ahead.', $('i-lost'));
+  if(!closed && v.stage!=='new' && !v.next)
+    return fail('Pick when you will follow up next. Every open lead needs a date.', $('i-next'));
+  if(closed) v.next='';
+  if(v.stage!=='lost') v.lost='';
+  if(v.stage!=='booked') v.value='';
+
+  var now = Date.now();
+  var src = editing ? JSON.parse(JSON.stringify(editing))
+                    : { id:'L'+now.toString(36)+Math.random().toString(36).slice(2,6),
+                        created:now, log:[] };
+  delete src._unsaved;
+  var log = Array.isArray(src.log) ? src.log : [];
+  if(!editing) log.push({t:now, m:'Added · '+((SRC[v.source]||{}).n||v.source)});
+  if(editing && editing.stage!==v.stage) log.push({t:now, m:'Moved to '+SM[v.stage].n});
+  if(editing && editing.next!==v.next && v.next) log.push({t:now, m:'Follow-up set for '+nice(v.next)});
+  var note=$('i-note').value.trim(); if(note) log.push({t:now, m:note});
+
+  var rec={}; for(var x in src) rec[x]=src[x]; for(var y in v) rec[y]=v[y];
+  rec.log=log; rec.updated=now;
+  if(!rec.firstContact && v.stage!=='new') rec.firstContact=now;
+  if(v.stage==='booked' && !rec.bookedAt) rec.bookedAt=now;
+
+  pending[rec.id]=rec; savePending();
+  render(); $('dlg').close(); toast(editing ? 'Saved' : 'Lead added');
+  flush();
+});
+
+/* ── talking to the Sheet ──────────────────────────────── */
+function configured(){ return /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(API); }
+
+async function pull(){
+  if(!configured()) return;
+  var r = await fetch(API, {method:'GET'});
+  var d = await r.json();
+  if(!d || !d.ok) throw new Error((d && d.error) || 'The sheet did not answer properly.');
+  sheetLeads = (d.leads||[]).filter(function(l){ return l && l.id && l.name });
+  // anything the Sheet now has is no longer pending
+  var changed=false;
+  sheetLeads.forEach(function(l){
+    if(pending[l.id] && (pending[l.id].updated||0) <= (l.updated||0)){ delete pending[l.id]; changed=true; } });
+  if(changed) savePending();
+  loaded = true;
+}
+
+async function push(rec){
+  var r = await fetch(API, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},   // keeps the browser from preflighting
+    body: JSON.stringify({action:'save', lead:rec})
+  });
+  var d = await r.json();
+  if(!d || !d.ok) throw new Error((d && d.error) || 'The sheet refused the save.');
+}
+
+var flushing=false;
+async function flush(){
+  if(flushing || !ready || !configured()) return;
+  var ids = Object.keys(pending); if(!ids.length) return;
+  flushing=true; window.__flushing=true;
+  var failed=0;
+  for(var i=0;i<ids.length;i++){
+    var rec = pending[ids[i]]; if(!rec) continue;
+    try { await push(rec); delete pending[ids[i]]; savePending(); }
+    catch(x){ failed++; console.error(x); break; }
+  }
+  flushing=false; window.__flushing=false; render();
+  if(failed) toast('Could not reach the tracker. The lead is safe on this device, press Try saving again.', 8000);
+  else { try{ await pull(); render(); }catch(e){} }
+}
+$('retryBtn').onclick=function(){ toast('Trying…',1200); flush() };
+window.addEventListener('online', function(){ flush() });
+
+async function boot(){
+  if(!configured()){
+    ready=false; applyGate();
+    mode('bad','<b>This page is not connected to the tracker yet.</b> The Google Sheet address has '
+      + 'not been set. Nothing can be saved until it is.');
+    render(); return;
+  }
+  try{
+    await pull();
+    ready=true; applyGate(); $('mode').hidden=true; render(); flush();
+  }catch(e){
+    ready=true; applyGate();   // still let people type; it queues and retries
+    mode('bad','<b>Could not reach the tracker just now.</b> '+esc(e.message||'')
+      +' Anything you add is kept on this device and saved as soon as it reconnects.');
+    render();
+  }
+  setInterval(async function(){
+    if(!configured() || Object.keys(pending).length) return;   // never overwrite unsaved work
+    try{ await pull(); if(loaded) $('mode').hidden=true; render(); }catch(e){}
+  }, POLL_MS);
+}
+render(); applyGate(); boot();
+</script>
+</body>
+</html>
